@@ -18,6 +18,6 @@ func NewVoiceMessage(fn ...func() ([]byte, error)) *VoiceMessage {
 	return voice
 }
 
-func (voice *VoiceMessage) Send()  {
+func (voice *VoiceMessage) Send() {
 	panic("impl me")
 }

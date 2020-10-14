@@ -34,7 +34,7 @@ func Face(faces ...int32) func(*RichMessage) {
 func At(uins ...int64) func(*RichMessage) {
 	return func(richMessage *RichMessage) {
 		for _, uin := range uins {
-			richMessage.elems = append(richMessage.elems, message.NewAt(uin,"test"))
+			richMessage.elems = append(richMessage.elems, message.NewAt(uin, "test"))
 		}
 	}
 }

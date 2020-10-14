@@ -4,7 +4,7 @@ import "github.com/Mrs4s/MiraiGo/client"
 
 type Accessory struct {
 	client *client.QQClient
-	zero *Zero
+	zero   *Zero
 }
 
 // Get the mirai-zero object
