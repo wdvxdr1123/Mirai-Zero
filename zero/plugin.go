@@ -10,8 +10,8 @@ type IPlugin interface {
 
 // 插件相关信息
 type PluginInfo struct {
-	PluginName string	`json:"plugin_name"`
-	Author     string	`json:"author"`
-	Version    string	`json:"version"`
-	Details    string	`json:"details"`
+	PluginName string `json:"plugin_name"`
+	Author     string `json:"author"`
+	Version    string `json:"version"`
+	Details    string `json:"details"`
 }

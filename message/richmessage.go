@@ -2,6 +2,18 @@ package message
 
 import "github.com/Mrs4s/MiraiGo/message"
 
+func (m *RichMessage) Append(r ...func(*RichMessage)) *RichMessage {
+	for _, f := range r {
+		f(m)
+	}
+	return m
+}
+
+// todo
+func (m *RichMessage) Send() {
+	panic("impl me")
+}
+
 func Text(str ...string) func(*RichMessage) {
 	return func(richMessage *RichMessage) {
 		for _, s := range str {
@@ -36,6 +48,12 @@ func At(uins ...int64) func(*RichMessage) {
 		for _, uin := range uins {
 			richMessage.elems = append(richMessage.elems, message.NewAt(uin, "test"))
 		}
+	}
+}
+
+func AtAll() func(*RichMessage) {
+	return func(richMessage *RichMessage) {
+		richMessage.elems = append(richMessage.elems, message.AtAll())
 	}
 }
 
