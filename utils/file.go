@@ -3,6 +3,7 @@ package utils
 import (
 	"bytes"
 	"compress/gzip"
+	"encoding/base64"
 	"io/ioutil"
 	"net/http"
 	"strings"
@@ -39,14 +40,13 @@ func Url(url string) func() ([]byte, error) {
 // 通过文件获取
 func File(file string) func() ([]byte, error) {
 	return func() ([]byte, error) {
-		panic("impl me")
-		return nil, nil
+		return ioutil.ReadFile(file)
 	}
 }
 
 // 通过Base64字符串获取
 func Base64(data string) func() ([]byte, error) {
 	return func() ([]byte, error) {
-		panic("impl me")
+		return base64.StdEncoding.DecodeString(data)
 	}
 }
