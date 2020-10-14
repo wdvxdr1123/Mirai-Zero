@@ -8,7 +8,8 @@ import (
 	"strings"
 )
 
-func URL(url string) func() ([]byte, error) { // todo
+// 通过Url网络地址获取
+func Url(url string) func() ([]byte, error) {
 	return func() ([]byte, error) {
 		req, err := http.NewRequest("GET", url, nil)
 		if err != nil {
@@ -32,5 +33,20 @@ func URL(url string) func() ([]byte, error) { // todo
 			return unCom, err
 		}
 		return body, nil
+	}
+}
+
+// 通过文件获取
+func File(file string) func() ([]byte, error) {
+	return func() ([]byte, error) {
+		panic("impl me")
+		return nil, nil
+	}
+}
+
+// 通过Base64字符串获取
+func Base64(data string) func() ([]byte, error) {
+	return func() ([]byte, error) {
+		panic("impl me")
 	}
 }
