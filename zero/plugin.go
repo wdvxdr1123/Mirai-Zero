@@ -6,7 +6,7 @@ type IPlugin interface {
 	// 获取插件信息
 	GetPluginInfo() PluginInfo
 	// 初始化插件
-	Init()
+	Init(*Accessory)
 	// 登录成功钩子
 	OnLogin()
 	// 启用插件
@@ -21,7 +21,7 @@ type PluginInfo struct {
 	Author     string           `json:"author"`
 	Version    string           `json:"version"`
 	Details    string           `json:"details"`
-	Permission PluginPermission `json:"permission"` // 先写着挖个坑
+	Permission PluginPermission `json:"permission"` // 先写着挖个坑，不一定会填
 }
 
 type PluginPermission int

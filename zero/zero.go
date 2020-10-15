@@ -19,7 +19,7 @@ import (
 type Zero struct {
 	config *Config
 	client *client.QQClient
-	events *events.EventEmitter
+	events events.EventEmitter
 }
 
 var zero *Zero // 主体服务实例 <目前没有支持多号登录的计划>
@@ -108,7 +108,7 @@ func Start() {
 
 // 将插件注册到主服务
 func RegisterPlugin(plugin IPlugin) {
-	plugin.Init()
 	// todo:Log
 	panic("impl me")
+	// plugin.Init(new(Accessory))
 }

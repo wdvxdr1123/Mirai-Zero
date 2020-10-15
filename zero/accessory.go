@@ -3,6 +3,8 @@ package zero
 import (
 	"context"
 	"github.com/Mrs4s/MiraiGo/client"
+	"github.com/wdvxdr1123/mirai-zero/events"
+	"reflect"
 )
 
 type Context struct {
@@ -31,4 +33,18 @@ func (a *Accessory) GetClient() *client.QQClient {
 // Get the global config
 func (a *Accessory) GetConfig() *Config {
 	return a.zero.config
+}
+
+// register event
+func (a *Accessory) registerEvent(name string, f interface{}) {
+	a.zero.events.On(events.EventName(name), func(data ...interface{}) {
+		defer func() {
+
+		}()
+		values := make([]reflect.Value, 0, len(data))
+		for _, v := range data {
+			values = append(values, reflect.ValueOf(v))
+		}
+		_ = reflect.ValueOf(f).Call(values)
+	})
 }
