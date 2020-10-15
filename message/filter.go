@@ -3,7 +3,7 @@ package message
 import "github.com/Mrs4s/MiraiGo/message"
 
 // 筛选指定的消息
-func (r *RichMessage) Filter(fn ...func(*message.IMessageElement) bool) *RichMessage { // todo:用pipeline改写
+func Filter(r *RichMessage,fn ...func(*message.IMessageElement) bool) *RichMessage { // todo:用pipeline改写
 	var m = &RichMessage{}
 	for _, elem := range r.elems {
 		var st = true
@@ -20,7 +20,7 @@ func (r *RichMessage) Filter(fn ...func(*message.IMessageElement) bool) *RichMes
 	return m
 }
 
-func (r *RichMessage) FirstMatched(fn ...func(element *message.IMessageElement) bool) *message.IMessageElement {
+func FirstMatched(r *RichMessage, fn ...func(element *message.IMessageElement) bool) *message.IMessageElement {
 	for _, elem := range r.elems {
 		var st = true
 		for _, f := range fn {
@@ -36,7 +36,7 @@ func (r *RichMessage) FirstMatched(fn ...func(element *message.IMessageElement) 
 	return nil
 }
 
-func (r *RichMessage) Map(fn ...func(element message.IMessageElement) message.IMessageElement) *RichMessage {
+func Foreach(r *RichMessage,fn ...func(element message.IMessageElement) message.IMessageElement) *RichMessage {
 	var m = &RichMessage{}
 	for _, elem := range r.elems {
 		for _, f := range fn {
@@ -45,3 +45,4 @@ func (r *RichMessage) Map(fn ...func(element message.IMessageElement) message.IM
 	}
 	return m
 }
+

@@ -10,8 +10,13 @@ import (
 )
 
 type Config struct {
-	QQ       int64  `json:"qq"`
+	Uin      int64  `json:"uin"`
 	Password string `json:"password"`
+}
+
+var DefaultConfig = Config{
+	Uin:      0,
+	Password: "",
 }
 
 func LoadConfig() *Config {
@@ -27,6 +32,9 @@ func LoadConfig() *Config {
 		}
 		return config
 	}
+	config, _ := json.Marshal(DefaultConfig)
+	_ = ioutil.WriteFile("config.json", config, os.FileMode(0755))
+	log.Fatal("config.json 不存在...")
 	return nil
 }
 

@@ -9,14 +9,25 @@ type IPlugin interface {
 	Init()
 	// 登录成功钩子
 	OnLogin()
-	// 输出日志信息
-	Log() <-chan LogEvent
+	// 启用插件
+	Enable()
+	// 停用插件
+	Stop()
 }
 
 // 插件相关信息
 type PluginInfo struct {
-	PluginName string `json:"plugin_name"`
-	Author     string `json:"author"`
-	Version    string `json:"version"`
-	Details    string `json:"details"`
+	PluginName string           `json:"plugin_name"`
+	Author     string           `json:"author"`
+	Version    string           `json:"version"`
+	Details    string           `json:"details"`
+	Permission PluginPermission `json:"permission"`// 先写着挖个坑
 }
+
+type PluginPermission int
+
+const (
+	Normal PluginPermission = iota
+	Manage
+	Root
+)

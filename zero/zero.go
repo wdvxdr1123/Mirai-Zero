@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/Mrs4s/MiraiGo/client"
 	log "github.com/sirupsen/logrus"
+	"github.com/t-tomalak/logrus-easy-formatter"
 	"github.com/wdvxdr1123/mirai-zero/events"
 	"github.com/wdvxdr1123/mirai-zero/utils"
 	"github.com/yinghau76/go-ascii-art"
@@ -24,20 +25,19 @@ type Zero struct {
 var zero *Zero // 主体服务实例 <目前没有支持多号登录的计划>
 
 func init() {
+	log.SetFormatter(&easy.Formatter{
+		TimestampFormat: "2006-01-02 15:04:05",
+		LogFormat:       "[mirai-zero][%time%] [%lvl%]: %msg% \n",
+	})
 	zero = &Zero{}
-}
-
-// 将插件注册到主服务
-func RegisterPlugin(plugin IPlugin) {
-	panic("impl me")
 }
 
 func Init() {
 	zero.config = LoadConfig()
-	zero.client = client.NewClient(zero.config.QQ, zero.config.Password)
+	zero.client = client.NewClient(zero.config.Uin, zero.config.Password)
 	device, err := LoadRandomDevice()
 	if err != nil {
-		log.Fatal("加载设备信息失败 " ,err)
+		log.Fatal("加载设备信息失败 ", err)
 	}
 	_ = client.SystemDeviceInfo.ReadJson(device)
 }
@@ -46,7 +46,7 @@ func Start() {
 	cli := zero.client
 	zero.client.AllowSlider = false
 	rsp, err := cli.Login()
-	for { // todo Login
+	for {
 		if err != nil {
 			log.Fatal("登录失败: ", err)
 		}
@@ -103,4 +103,12 @@ func Start() {
 		}
 		break
 	}
+	log.Info("登录成功！")
+}
+
+// 将插件注册到主服务
+func RegisterPlugin(plugin IPlugin) {
+	plugin.Init()
+	// todo:Log
+	panic("impl me")
 }
