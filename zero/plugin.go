@@ -21,7 +21,7 @@ type PluginInfo struct {
 	Author     string           `json:"author"`
 	Version    string           `json:"version"`
 	Details    string           `json:"details"`
-	Permission PluginPermission `json:"permission"`// 先写着挖个坑
+	Permission PluginPermission `json:"permission"` // 先写着挖个坑
 }
 
 type PluginPermission int

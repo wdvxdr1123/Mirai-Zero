@@ -34,7 +34,7 @@ func Or(chans ...<-chan interface{}) <-chan interface{} {
 }
 
 // or-done-channel
-func OrDone(done,c <-chan interface{}) <-chan interface{}{
+func OrDone(done, c <-chan interface{}) <-chan interface{} {
 	valStream := make(chan interface{})
 	go func() {
 		defer close(valStream)
@@ -42,7 +42,7 @@ func OrDone(done,c <-chan interface{}) <-chan interface{}{
 			select {
 			case <-done:
 				return
-			case v,ok:=<-c:
+			case v, ok := <-c:
 				if ok == false {
 					return
 				}
@@ -65,7 +65,7 @@ func Generator(done <-chan interface{}, its ...interface{}) <-chan interface{} {
 			select {
 			case <-done:
 				return
-			case itStream<-it:
+			case itStream <- it:
 			}
 		}
 	}()
@@ -91,15 +91,15 @@ func Repeat(done <-chan interface{}, its ...interface{}) <-chan interface{} {
 }
 
 // 从pipeline中挑选前 num 个
-func Take(done <-chan interface{}, valueStream <-chan interface{}, num int) <- chan interface{}{
-	takeStream := make(chan  interface{})
+func Take(done <-chan interface{}, valueStream <-chan interface{}, num int) <-chan interface{} {
+	takeStream := make(chan interface{})
 	go func() {
 		defer close(takeStream)
-		for i:=0;i<num;i++ {
+		for i := 0; i < num; i++ {
 			select {
 			case <-done:
 				return
-			case takeStream<-valueStream:
+			case takeStream <- valueStream:
 			}
 		}
 	}()
@@ -107,14 +107,14 @@ func Take(done <-chan interface{}, valueStream <-chan interface{}, num int) <- c
 }
 
 // 桥接 Channel
-func Bridge(done <-chan interface{}, chanStream <- chan <-chan interface{}) <-chan interface{}{
+func Bridge(done <-chan interface{}, chanStream <-chan <-chan interface{}) <-chan interface{} {
 	valStream := make(chan interface{})
 	go func() {
 		defer close(valStream)
 		for {
 			var stream <-chan interface{}
 			select {
-			case maybeStream, ok := <- chanStream:
+			case maybeStream, ok := <-chanStream:
 				if ok == false {
 					return
 				}
@@ -124,7 +124,7 @@ func Bridge(done <-chan interface{}, chanStream <- chan <-chan interface{}) <-ch
 			}
 			for val := range OrDone(done, stream) {
 				select {
-				case valStream<-val:
+				case valStream <- val:
 				case <-done:
 				}
 			}

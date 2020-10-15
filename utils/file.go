@@ -39,7 +39,7 @@ func Url(url string) func() ([]byte, error) {
 }
 
 // 通过文件获取
-func File(file string) func() ([]byte, error) {
+func File(file string) func() ([]byte, error) { // todo: cache
 	return func() ([]byte, error) {
 		return ioutil.ReadFile(file)
 	}
