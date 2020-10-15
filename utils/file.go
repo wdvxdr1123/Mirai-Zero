@@ -6,6 +6,7 @@ import (
 	"encoding/base64"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"strings"
 )
 
@@ -49,4 +50,9 @@ func Base64(data string) func() ([]byte, error) {
 	return func() ([]byte, error) {
 		return base64.StdEncoding.DecodeString(data)
 	}
+}
+
+func FileExist(path string) bool {
+	_, err := os.Stat(path)
+	return err == nil || os.IsExist(err)
 }
