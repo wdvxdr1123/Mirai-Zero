@@ -20,9 +20,9 @@ var DefaultConfig = Config{
 }
 
 func LoadConfig() *Config {
-	if utils.FileExist("config.json") {
+	if utils.FileExist("Config.json") {
 		config := &Config{}
-		cfg, err := ioutil.ReadFile("config.json")
+		cfg, err := ioutil.ReadFile("Config.json")
 		if err != nil {
 			log.Fatal("无法读取配置文件 ", err)
 		}
@@ -33,8 +33,8 @@ func LoadConfig() *Config {
 		return config
 	}
 	config, _ := json.Marshal(DefaultConfig)
-	_ = ioutil.WriteFile("config.json", config, os.FileMode(0755))
-	log.Fatal("config.json 不存在...")
+	_ = ioutil.WriteFile("Config.json", config, os.FileMode(0755))
+	log.Fatal("Config.json 不存在...")
 	return nil
 }
 

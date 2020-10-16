@@ -1,6 +1,7 @@
 package pipeline
 
 // Concurrency in Go
+// 好像这个框架用不到，管他的写都写了
 
 // or done channel
 // 合并一系列Done Channel,只要有一个完成就退出

@@ -85,13 +85,21 @@ func (s *Session) Type() Type {
 
 type BaseSession struct {
 	Session
-	from   uint64
+	from   int64
 	sender types.IUser
 }
 
-// todo
+// todo: 这部分返回值还没想好怎么弄
 func (s *BaseSession) Send(zero *zero.Zero, message *message.IMessage) (*message.IMessage, error) {
-	panic("impl me")
+	switch s.SubType() {
+	case Group:
+		zero.SendGroupMessage(s.from, message)
+	case Private:
+		panic("impl me")
+	default:
+		panic("invalid session type")
+	}
+	return nil, nil // 先空着
 }
 
 func (s *BaseSession) From() uint64 {

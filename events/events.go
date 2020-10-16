@@ -127,7 +127,6 @@ func (e *emitter) AddListener(evt ZeroEventName, listener ...Listener) {
 // Synchronously calls each of the listeners registered for the event named
 // eventName, in the order they were registered,
 // passing the supplied arguments to each.
-
 func (e *emitter) Emit(evt ZeroEventName, data ...interface{}) {
 	if e.evtListeners == nil {
 		return // has no listeners to emit/speak yet

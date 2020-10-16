@@ -7,7 +7,7 @@ import (
 // 能单独发送的消息,群礼物，闪照，秀图之类的
 // 包括富文本消息
 type IMessage interface {
-	Recall()
+	//Recall()
 }
 
 type (
@@ -18,7 +18,7 @@ type (
 
 	// 富文本消息，一般消息
 	RichMessage struct {
-		elems []message.IMessageElement
+		Elems []message.IMessageElement
 	}
 
 	// 群礼物

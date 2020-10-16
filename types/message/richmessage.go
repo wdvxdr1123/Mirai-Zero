@@ -6,7 +6,7 @@ import (
 )
 
 func NewRichMessage(r ...func(*RichMessage)) *RichMessage {
-	m := &RichMessage{elems: []message.IMessageElement{}}
+	m := &RichMessage{Elems: []message.IMessageElement{}}
 	return m.Append(r...)
 }
 
@@ -19,7 +19,7 @@ func (m *RichMessage) Append(r ...func(*RichMessage)) *RichMessage {
 
 func Text(str ...interface{}) func(*RichMessage) {
 	return func(richMessage *RichMessage) {
-		richMessage.elems = append(richMessage.elems, message.NewText(fmt.Sprint(str...)))
+		richMessage.Elems = append(richMessage.Elems, message.NewText(fmt.Sprint(str...)))
 	}
 }
 
@@ -28,7 +28,7 @@ func Image(fn ...func() ([]byte, error)) func(*RichMessage) {
 	return func(richMessage *RichMessage) {
 		for _, f := range fn {
 			if v, err := f(); err == nil {
-				richMessage.elems = append(richMessage.elems, message.NewImage(v))
+				richMessage.Elems = append(richMessage.Elems, message.NewImage(v))
 			}
 		}
 	}
@@ -38,7 +38,7 @@ func Image(fn ...func() ([]byte, error)) func(*RichMessage) {
 func Face(faces ...int32) func(*RichMessage) {
 	return func(richMessage *RichMessage) {
 		for _, index := range faces {
-			richMessage.elems = append(richMessage.elems, message.NewFace(index))
+			richMessage.Elems = append(richMessage.Elems, message.NewFace(index))
 		}
 	}
 }
@@ -47,14 +47,14 @@ func Face(faces ...int32) func(*RichMessage) {
 func At(uins ...int64) func(*RichMessage) {
 	return func(richMessage *RichMessage) {
 		for _, uin := range uins {
-			richMessage.elems = append(richMessage.elems, message.NewAt(uin, "test"))
+			richMessage.Elems = append(richMessage.Elems, message.NewAt(uin, "test"))
 		}
 	}
 }
 
 func AtAll() func(*RichMessage) {
 	return func(richMessage *RichMessage) {
-		richMessage.elems = append(richMessage.elems, message.AtAll())
+		richMessage.Elems = append(richMessage.Elems, message.AtAll())
 	}
 }
 

@@ -4,9 +4,11 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/Mrs4s/MiraiGo/client"
+	message2 "github.com/Mrs4s/MiraiGo/message"
 	log "github.com/sirupsen/logrus"
 	"github.com/t-tomalak/logrus-easy-formatter"
 	"github.com/wdvxdr1123/mirai-zero/events"
+	"github.com/wdvxdr1123/mirai-zero/types/message"
 	"github.com/wdvxdr1123/mirai-zero/utils"
 	"github.com/yinghau76/go-ascii-art"
 	"image"
@@ -18,9 +20,10 @@ import (
 )
 
 type Zero struct {
-	config *Config
-	client *client.QQClient
-	events events.EventEmitter
+	Config *Config
+	Client *client.QQClient
+
+	Events events.EventEmitter
 }
 
 var zero *Zero // 主体服务实例 <目前没有支持多号登录的计划>
@@ -34,8 +37,8 @@ func init() {
 }
 
 func Init() {
-	zero.config = LoadConfig()
-	zero.client = client.NewClient(zero.config.Uin, zero.config.Password)
+	zero.Config = LoadConfig()
+	zero.Client = client.NewClient(zero.Config.Uin, zero.Config.Password)
 	device, err := LoadRandomDevice()
 	if err != nil {
 		log.Fatal("加载设备信息失败 ", err)
@@ -44,8 +47,8 @@ func Init() {
 }
 
 func Start() {
-	cli := zero.client
-	zero.client.AllowSlider = false
+	cli := zero.Client
+	zero.Client.AllowSlider = false
 	rsp, err := cli.Login()
 	for {
 		if err != nil {
@@ -116,7 +119,7 @@ func RegisterPlugin(plugin IPlugin) {
 
 // register event
 func (z *Zero) registerEvent(name string, f interface{}) {
-	z.events.On(events.ZeroEventName(name), func(data ...interface{}) {
+	z.Events.On(events.ZeroEventName(name), func(data ...interface{}) {
 		defer func() {
 
 		}()
@@ -126,4 +129,30 @@ func (z *Zero) registerEvent(name string, f interface{}) {
 		}
 		_ = reflect.ValueOf(f).Call(values)
 	})
+}
+
+func (z *Zero) SendGroupMessage(groupId int64, m message.IMessage) int32 {
+	switch e := m.(type) {
+	case *message.RichMessage:
+		_ = z.Client.SendGroupMessage(groupId, &message2.SendingMessage{
+			Elements: z.GroupUpload(e, groupId).Elems,
+		},
+		)
+	}
+	return 0
+}
+
+func (z *Zero) GroupUpload(m *message.RichMessage, groupId int64) *message.RichMessage {
+	for index, elem := range m.Elems {
+		if i, ok := elem.(*message2.ImageElement); ok {
+			gm, err := z.Client.UploadGroupImage(groupId, i.Data)
+			if err != nil {
+				log.Warnf("警告: 群 %v 消息图片上传失败: %v", groupId, err)
+				continue
+			}
+			m.Elems[index] = gm
+			continue
+		}
+	}
+	return m
 }
