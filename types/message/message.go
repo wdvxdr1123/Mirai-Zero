@@ -2,13 +2,12 @@ package message
 
 import (
 	"github.com/Mrs4s/MiraiGo/message"
-	"github.com/wdvxdr1123/mirai-zero/zero"
 )
 
 // 能单独发送的消息,群礼物，闪照，秀图之类的
 // 包括富文本消息
 type IMessage interface {
-	Send(zero.Accessory)
+	Recall()
 }
 
 type (

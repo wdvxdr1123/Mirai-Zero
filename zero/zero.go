@@ -12,6 +12,7 @@ import (
 	"image"
 	"io/ioutil"
 	"os"
+	"reflect"
 	"strings"
 	"time"
 )
@@ -27,7 +28,7 @@ var zero *Zero // 主体服务实例 <目前没有支持多号登录的计划>
 func init() {
 	log.SetFormatter(&easy.Formatter{
 		TimestampFormat: "2006-01-02 15:04:05",
-		LogFormat:       "[mirai-zero][%time%] [%lvl%]: %msg% \n",
+		LogFormat:       "[Zero][%time%] [%lvl%]: %msg% \n",
 	})
 	zero = &Zero{}
 }
@@ -111,4 +112,18 @@ func RegisterPlugin(plugin IPlugin) {
 	// todo:Log
 	panic("impl me")
 	// plugin.Init(new(Accessory))
+}
+
+// register event
+func (z *Zero) registerEvent(name string, f interface{}) {
+	z.events.On(events.ZeroEventName(name), func(data ...interface{}) {
+		defer func() {
+
+		}()
+		values := make([]reflect.Value, 0, len(data))
+		for _, v := range data {
+			values = append(values, reflect.ValueOf(v))
+		}
+		_ = reflect.ValueOf(f).Call(values)
+	})
 }

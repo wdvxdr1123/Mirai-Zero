@@ -22,44 +22,44 @@ const (
 )
 
 type (
-	// EventName is just a type of string, it's the event name
-	EventName string
+	// ZeroEventName is just a type of string, it's the event name
+	ZeroEventName string
 	// Listener is the type of a Listener, it's a func which receives any,optional, arguments from the caller/emitter
 	Listener func(...interface{})
 	// Events the type for registered listeners, it's just a map[string][]func(...interface{})
-	Events map[EventName][]Listener
+	Events map[ZeroEventName][]Listener
 
 	// EventEmitter is the message/or/event manager
 	EventEmitter interface {
 		// AddListener is an alias for .On(eventName, listener).
-		AddListener(EventName, ...Listener)
+		AddListener(ZeroEventName, ...Listener)
 		// Emit fires a particular event,
 		// Synchronously calls each of the listeners registered for the event named
 		// eventName, in the order they were registered,
 		// passing the supplied arguments to each.
-		Emit(EventName, ...interface{})
+		Emit(ZeroEventName, ...interface{})
 		// EventNames returns an array listing the events for which the emitter has registered listeners.
 		// The values in the array will be strings.
-		EventNames() []EventName
+		EventNames() []ZeroEventName
 		// GetMaxListeners returns the max listeners for this emitter
 		// see SetMaxListeners
 		GetMaxListeners() int
 		// ListenerCount returns the length of all registered listeners to a particular event
-		ListenerCount(EventName) int
+		ListenerCount(ZeroEventName) int
 		// Listeners returns a copy of the array of listeners for the event named eventName.
-		Listeners(EventName) []Listener
+		Listeners(ZeroEventName) []Listener
 		// On registers a particular listener for an event, func receiver parameter(s) is/are optional
-		On(EventName, ...Listener)
+		On(ZeroEventName, ...Listener)
 		// Once adds a one time listener function for the event named eventName.
 		// The next time eventName is triggered, this listener is removed and then invoked.
-		Once(EventName, ...Listener)
+		Once(ZeroEventName, ...Listener)
 		// RemoveAllListeners removes all listeners, or those of the specified eventName.
 		// Note that it will remove the event itself.
 		// Returns an indicator if event and listeners were found before the remove.
-		RemoveAllListeners(EventName) bool
+		RemoveAllListeners(ZeroEventName) bool
 		// RemoveListener removes given listener from the event named eventName.
 		// Returns an indicator whether listener was removed
-		RemoveListener(EventName, Listener) bool
+		RemoveListener(ZeroEventName, Listener) bool
 		// Clear removes all events and all listeners, restores Events to an empty value
 		Clear()
 		// SetMaxListeners obviously this function allows the MaxListeners
@@ -93,7 +93,7 @@ func New() EventEmitter {
 	return &emitter{maxListeners: DefaultMaxListeners, evtListeners: Events{}}
 }
 
-func (e *emitter) AddListener(evt EventName, listener ...Listener) {
+func (e *emitter) AddListener(evt ZeroEventName, listener ...Listener) {
 	if len(listener) == 0 {
 		return
 	}
@@ -128,7 +128,7 @@ func (e *emitter) AddListener(evt EventName, listener ...Listener) {
 // eventName, in the order they were registered,
 // passing the supplied arguments to each.
 
-func (e *emitter) Emit(evt EventName, data ...interface{}) {
+func (e *emitter) Emit(evt ZeroEventName, data ...interface{}) {
 	if e.evtListeners == nil {
 		return // has no listeners to emit/speak yet
 	}
@@ -136,7 +136,7 @@ func (e *emitter) Emit(evt EventName, data ...interface{}) {
 		for i := range listeners {
 			l := listeners[i]
 			if l != nil {
-				l(data...)
+				go l(data...)
 			}
 		}
 	}
@@ -144,12 +144,12 @@ func (e *emitter) Emit(evt EventName, data ...interface{}) {
 
 // EventNames returns an array listing the events for which the emitter has registered listeners.
 // The values in the array will be strings.
-func (e *emitter) EventNames() []EventName {
+func (e *emitter) EventNames() []ZeroEventName {
 	if e.evtListeners == nil || e.Len() == 0 {
 		return nil
 	}
 
-	names := make([]EventName, e.Len(), e.Len())
+	names := make([]ZeroEventName, e.Len(), e.Len())
 	i := 0
 	for k := range e.evtListeners {
 		names[i] = k
@@ -165,7 +165,7 @@ func (e *emitter) GetMaxListeners() int {
 }
 
 // ListenerCount returns the length of all registered listeners to a particular event
-func (e *emitter) ListenerCount(evt EventName) int {
+func (e *emitter) ListenerCount(evt ZeroEventName) int {
 	if e.evtListeners == nil {
 		return 0
 	}
@@ -184,7 +184,7 @@ func (e *emitter) ListenerCount(evt EventName) int {
 }
 
 // Listeners returns a copy of the array of listeners for the event named eventName.
-func (e *emitter) Listeners(evt EventName) []Listener {
+func (e *emitter) Listeners(evt ZeroEventName) []Listener {
 	if e.evtListeners == nil {
 		return nil
 	}
@@ -208,13 +208,13 @@ func (e *emitter) Listeners(evt EventName) []Listener {
 }
 
 // On registers a particular listener for an event, func receiver parameter(s) is/are optional
-func (e *emitter) On(evt EventName, listener ...Listener) {
+func (e *emitter) On(evt ZeroEventName, listener ...Listener) {
 	e.AddListener(evt, listener...)
 }
 
 // Once adds a one time listener function for the event named eventName.
 // The next time eventName is triggered, this listener is removed and then invoked.
-func (e *emitter) Once(evt EventName, listener ...Listener) {
+func (e *emitter) Once(evt ZeroEventName, listener ...Listener) {
 	if len(listener) == 0 {
 		return
 	}
@@ -262,7 +262,7 @@ func (e *emitter) Once(evt EventName, listener ...Listener) {
 // RemoveAllListeners removes all listeners, or those of the specified eventName.
 // Note that it will remove the event itself.
 // Returns an indicator if event and listeners were found before the remove.
-func (e *emitter) RemoveAllListeners(evt EventName) bool {
+func (e *emitter) RemoveAllListeners(evt ZeroEventName) bool {
 	if e.evtListeners == nil {
 		return false // has nothing to remove
 	}
@@ -280,7 +280,7 @@ func (e *emitter) RemoveAllListeners(evt EventName) bool {
 }
 
 // RemoveListener removes the specified listener from the listener array for the event named eventName.
-func (e *emitter) RemoveListener(evt EventName, listener Listener) bool {
+func (e *emitter) RemoveListener(evt ZeroEventName, listener Listener) bool {
 	if e.evtListeners == nil {
 		return false
 	}

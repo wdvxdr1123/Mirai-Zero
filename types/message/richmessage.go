@@ -1,6 +1,14 @@
 package message
 
-import "github.com/Mrs4s/MiraiGo/message"
+import (
+	"fmt"
+	"github.com/Mrs4s/MiraiGo/message"
+)
+
+func NewRichMessage(r ...func(*RichMessage)) *RichMessage {
+	m := &RichMessage{elems: []message.IMessageElement{}}
+	return m.Append(r...)
+}
 
 func (m *RichMessage) Append(r ...func(*RichMessage)) *RichMessage {
 	for _, f := range r {
@@ -9,16 +17,9 @@ func (m *RichMessage) Append(r ...func(*RichMessage)) *RichMessage {
 	return m
 }
 
-// todo
-func (m *RichMessage) Send() {
-	panic("impl me")
-}
-
-func Text(str ...string) func(*RichMessage) {
+func Text(str ...interface{}) func(*RichMessage) {
 	return func(richMessage *RichMessage) {
-		for _, s := range str {
-			richMessage.elems = append(richMessage.elems, message.NewText(s))
-		}
+		richMessage.elems = append(richMessage.elems, message.NewText(fmt.Sprint(str...)))
 	}
 }
 

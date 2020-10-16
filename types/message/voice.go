@@ -1,9 +1,5 @@
 package message
 
-import (
-	"github.com/wdvxdr1123/mirai-zero/zero"
-)
-
 // 语音消息初始化
 func NewVoiceMessage(fn ...func() ([]byte, error)) *VoiceMessage {
 	var voice = &VoiceMessage{}
@@ -14,8 +10,4 @@ func NewVoiceMessage(fn ...func() ([]byte, error)) *VoiceMessage {
 		}
 	}
 	return voice
-}
-
-func (voice *VoiceMessage) Send(accessory zero.Accessory) {
-	panic("impl me")
 }
