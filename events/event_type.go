@@ -1,9 +1,8 @@
 package events
 
 import (
-	"context"
-	"github.com/wdvxdr1123/mirai-zero/types"
-	"github.com/wdvxdr1123/mirai-zero/types/message"
+	"github.com/wdvxdr1123/mirai-zero/types/session"
+	"github.com/wdvxdr1123/mirai-zero/zero"
 )
 
 //go:generate stringer -type=ZeroEventsName
@@ -33,24 +32,24 @@ const (
 )
 
 type (
-	EventGroupMessage        func(*context.Context, types.Group, message.IMessage)
-	EventPrivateMessage      func(*context.Context, types.IUser, message.IMessage)
-	EventGroupMute           func(*context.Context, types.Group, uint64)
-	EventGroupRecalled       func(*context.Context)
-	EventFriendRecalled      func(*context.Context)
-	EventJoinGroup           func(*context.Context)
-	EventLeaveGroup          func(*context.Context)
-	EventMemberJoin          func(*context.Context)
-	EventMemberLeave         func(*context.Context)
-	EventMemberCardUpdated   func(*context.Context)
-	EventPermissionChanged   func(*context.Context)
-	EventJoinRequest         func(*context.Context)
-	EventFriendRequest       func(*context.Context)
-	EventNewFriend           func(*context.Context)
-	EventNotify              func(*context.Context)
-	EventGroupMessageReceipt func(*context.Context)
+	EventGroupMessage        func(zero *zero.Zero, session session.IMessageSession)
+	EventPrivateMessage      func(zero *zero.Zero, session session.IMessageSession)
+	EventGroupMute           func(zero *zero.Zero, session session.IMessageSession)
+	EventGroupRecalled       func(zero *zero.Zero, session session.IMessageSession)
+	EventFriendRecalled      func(zero *zero.Zero, session session.IMessageSession)
+	EventJoinGroup           func(zero *zero.Zero, session session.IMessageSession)
+	EventLeaveGroup          func(zero *zero.Zero, session session.IMessageSession)
+	EventMemberJoin          func(zero *zero.Zero, session session.IMessageSession)
+	EventMemberLeave         func(zero *zero.Zero, session session.IMessageSession)
+	EventMemberCardUpdated   func(zero *zero.Zero, session session.IMessageSession)
+	EventPermissionChanged   func(zero *zero.Zero, session session.IMessageSession)
+	EventJoinRequest         func(zero *zero.Zero, session session.IMessageSession)
+	EventFriendRequest       func(zero *zero.Zero, session session.IMessageSession)
+	EventNewFriend           func(zero *zero.Zero, session session.IMessageSession)
+	EventNotify              func(zero *zero.Zero, session session.IMessageSession)
+	EventGroupMessageReceipt func(zero *zero.Zero, session session.IMessageSession)
 
-	EventLog           func(*context.Context)
-	EventDisconnect    func(*context.Context)
-	EventServerUpdated func(*context.Context)
+	EventLog           func(zero *zero.Zero, session session.ISession)
+	EventDisconnect    func(zero *zero.Zero, session session.ISession)
+	EventServerUpdated func(zero *zero.Zero, session session.ISession)
 )

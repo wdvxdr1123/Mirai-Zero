@@ -4,6 +4,7 @@ import (
 	"github.com/wdvxdr1123/mirai-zero/types"
 	"github.com/wdvxdr1123/mirai-zero/types/message"
 	"github.com/wdvxdr1123/mirai-zero/zero"
+	"sync"
 )
 
 //go:generate stringer -type=Type
@@ -25,6 +26,8 @@ type (
 	ISession interface {
 		Time() int64
 		Type() Type
+		Set(key string, value interface{})
+		Get(key string) (interface{}, bool)
 	}
 
 	// 业务相关会话
@@ -32,7 +35,7 @@ type (
 		// 发送消息
 		Send(zero *zero.Zero, message *message.IMessage) (*message.IMessage, error)
 		// 区分群聊和私聊
-		SubType()
+		SubType() Type
 		// 群聊为群号，私聊与Sender的ID一致
 		From() int64
 		// 获取发送者信息
@@ -69,6 +72,7 @@ type (
 )
 
 type Session struct {
+	state       sync.Map
 	time        uint64
 	sessionType Type
 }
@@ -83,17 +87,26 @@ func (s *Session) Type() Type {
 	return s.sessionType
 }
 
+// 设置会话的属性
+func (s *Session) Set(key string, val interface{}) {
+	s.state.Store(key, val)
+	// todo: 属性改变事件(类似于nonebot2)
+}
+
+// 读取会话的属性
+func (s *Session) Get(key string) (interface{}, bool) {
+	return s.state.Load(key)
+}
+
 type BaseSession struct {
 	Session
-	from   int64
-	sender types.IUser
 }
 
 // todo: 这部分返回值还没想好怎么弄
 func (s *BaseSession) Send(zero *zero.Zero, message *message.IMessage) (*message.IMessage, error) {
 	switch s.SubType() {
 	case Group:
-		zero.SendGroupMessage(s.from, message)
+		zero.SendGroupMessage(s.From(), message)
 	case Private:
 		panic("impl me")
 	default:
@@ -102,12 +115,25 @@ func (s *BaseSession) Send(zero *zero.Zero, message *message.IMessage) (*message
 	return nil, nil // 先空着
 }
 
-func (s *BaseSession) From() uint64 {
-	return s.From()
+func (s *BaseSession) From() int64 {
+	var user interface{}
+	if s.SubType() == Group {
+		user, _ = s.state.Load("group_id")
+	} else {
+		user, _ = s.state.Load("user_id")
+	}
+	if sender, ok := user.(int64); ok {
+		return sender
+	}
+	return 0
 }
 
 func (s *BaseSession) Sender() types.IUser {
-	return s.sender
+	user, _ := s.state.Load("sender")
+	if sender, ok := user.(types.IUser); ok {
+		return sender
+	}
+	return nil
 }
 
 func (s *BaseSession) SubType() Type {
