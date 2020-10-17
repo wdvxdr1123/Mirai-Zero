@@ -6,7 +6,7 @@ type IPlugin interface {
 	// 获取插件信息
 	GetPluginInfo() PluginInfo
 	// 初始化插件
-	Init(*Accessory)
+	Init(*Zero)
 	// 登录成功钩子
 	OnLogin()
 	// 启用插件

@@ -73,12 +73,22 @@ type (
 
 type Session struct {
 	state       sync.Map
-	time        uint64
+	time        int32
 	sessionType Type
 }
 
+// 创建一个新会话
+func NewSession(tp Type, t int32, fn ...func() (string, interface{})) *Session {
+	var s = &Session{sessionType: tp, time: t, state: sync.Map{}}
+	for _, f := range fn {
+		key, val := f()
+		s.state.Store(key, val)
+	}
+	return s
+}
+
 // 获取事件发生的时间戳
-func (s *Session) Time() uint64 {
+func (s *Session) Time() int32 {
 	return s.time
 }
 
@@ -100,6 +110,17 @@ func (s *Session) Get(key string) (interface{}, bool) {
 
 type BaseSession struct {
 	Session
+}
+
+// 创建一个新会话
+func NewBaseSession(tp Type, t int32, fn ...func() (string, interface{})) *BaseSession {
+	var s = &BaseSession{Session{sessionType: tp, time: t, state: sync.Map{}}}
+	// todo BaseSession
+	for _, f := range fn {
+		key, val := f()
+		s.state.Store(key, val)
+	}
+	return s
 }
 
 // todo: 这部分返回值还没想好怎么弄

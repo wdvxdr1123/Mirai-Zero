@@ -22,8 +22,6 @@ const (
 )
 
 type (
-	// ZeroEventName is just a type of string, it's the event name
-	ZeroEventName string
 	// Listener is the type of a Listener, it's a func which receives any,optional, arguments from the caller/emitter
 	Listener func(...interface{})
 	// Events the type for registered listeners, it's just a map[string][]func(...interface{})

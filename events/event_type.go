@@ -5,11 +5,11 @@ import (
 	"github.com/wdvxdr1123/mirai-zero/zero"
 )
 
-//go:generate stringer -type=ZeroEventsName
-type ZeroEventsName uint8
+//go:generate stringer -type=ZeroEventName
+type ZeroEventName uint8
 
 const (
-	ZeroEventGroupMessage ZeroEventsName = iota
+	ZeroEventGroupMessage ZeroEventName = iota
 	ZeroEventPrivateMessage
 	ZeroEventGroupMute
 	ZeroEventGroupRecalled
