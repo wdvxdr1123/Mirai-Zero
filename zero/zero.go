@@ -7,8 +7,7 @@ import (
 	message2 "github.com/Mrs4s/MiraiGo/message"
 	log "github.com/sirupsen/logrus"
 	"github.com/t-tomalak/logrus-easy-formatter"
-	"github.com/wdvxdr1123/mirai-zero/events"
-	"github.com/wdvxdr1123/mirai-zero/types/message"
+	"github.com/wdvxdr1123/mirai-zero/message"
 	"github.com/wdvxdr1123/mirai-zero/utils"
 	"github.com/yinghau76/go-ascii-art"
 	"image"
@@ -23,7 +22,7 @@ type Zero struct {
 	Config *Config
 	Client *client.QQClient
 
-	Events events.EventEmitter
+	Events EventEmitter
 }
 
 var zero *Zero // 主体服务实例 <目前没有支持多号登录的计划>
@@ -108,6 +107,7 @@ func Start() {
 		break
 	}
 	log.Info("登录成功！")
+	initZeroEvents()
 }
 
 // 将插件注册到主服务
@@ -118,8 +118,8 @@ func RegisterPlugin(plugin IPlugin) {
 }
 
 // register event
-func (z *Zero) registerEvent(name string, f interface{}) {
-	z.Events.On(events.ZeroEventName(name), func(data ...interface{}) {
+func (z *Zero) registerEvent(name uint8, f interface{}) {
+	z.Events.On(EventName(name), func(data ...interface{}) {
 		defer func() {
 
 		}()

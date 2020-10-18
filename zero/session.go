@@ -1,17 +1,15 @@
-package session
+package zero
 
 import (
-	"github.com/wdvxdr1123/mirai-zero/types"
-	"github.com/wdvxdr1123/mirai-zero/types/message"
-	"github.com/wdvxdr1123/mirai-zero/zero"
+	"github.com/wdvxdr1123/mirai-zero/message"
 	"sync"
 )
 
-//go:generate stringer -type=Type
-type Type uint
+//go:generate stringer -type=SessionType
+type SessionType uint
 
 const (
-	Base Type = 1 << iota
+	Base SessionType = 1 << iota
 	Log
 
 	Message
@@ -22,10 +20,12 @@ const (
 	Private
 )
 
+type MSG map[string]interface{}
+
 type (
 	ISession interface {
 		Time() int64
-		Type() Type
+		Type() SessionType
 		Set(key string, value interface{})
 		Get(key string) (interface{}, bool)
 	}
@@ -33,37 +33,37 @@ type (
 	// 业务相关会话
 	IBaseSession interface {
 		// 发送消息
-		Send(zero *zero.Zero, message *message.IMessage) (*message.IMessage, error)
+		Send(zero *Zero, message *message.IMessage) (*message.IMessage, error)
 		// 区分群聊和私聊
-		SubType() Type
+		SubType() SessionType
 		// 群聊为群号，私聊与Sender的ID一致
 		From() int64
 		// 获取发送者信息
-		Sender() types.IUser
+		Sender() MSG
 	}
 
 	// 消息会话
 	IMessageSession interface {
 		IBaseSession
-		MessageType() Type
+		MessageType() SessionType
 		// 原始消息
 		Message() message.IMessage
 		// 回复消息
-		Reply(zero *zero.Zero, message *message.IMessage) (*message.IMessage, error)
+		Reply(zero *Zero, message *message.IMessage) (*message.IMessage, error)
 		// 撤回消息
-		Recall(zero *zero.Zero) error
+		Recall(zero *Zero) error
 	}
 
 	// 通知会话
 	INoticeSession interface {
 		IBaseSession
-		NoticeType() Type
+		NoticeType() SessionType
 	}
 
 	// 请求会话
 	IRequestSession interface {
 		IBaseSession
-		RequestType() Type
+		RequestType() SessionType
 	}
 
 	// 业务无关会话(客户端离线，日志之类的消息)
@@ -74,15 +74,16 @@ type (
 type Session struct {
 	state       sync.Map
 	time        int32
-	sessionType Type
+	sessionType SessionType
 }
 
 // 创建一个新会话
-func NewSession(tp Type, t int32, fn ...func() (string, interface{})) *Session {
+func NewSession(tp SessionType, t int32, ms ...MSG) *Session {
 	var s = &Session{sessionType: tp, time: t, state: sync.Map{}}
-	for _, f := range fn {
-		key, val := f()
-		s.state.Store(key, val)
+	for _, m := range ms {
+		for key, val := range m {
+			s.state.Store(key, val)
+		}
 	}
 	return s
 }
@@ -93,7 +94,7 @@ func (s *Session) Time() int32 {
 }
 
 // 获取事件类型
-func (s *Session) Type() Type {
+func (s *Session) Type() SessionType {
 	return s.sessionType
 }
 
@@ -113,18 +114,19 @@ type BaseSession struct {
 }
 
 // 创建一个新会话
-func NewBaseSession(tp Type, t int32, fn ...func() (string, interface{})) *BaseSession {
+func NewBaseSession(tp SessionType, t int32,  ms ...MSG) *BaseSession {
 	var s = &BaseSession{Session{sessionType: tp, time: t, state: sync.Map{}}}
 	// todo BaseSession
-	for _, f := range fn {
-		key, val := f()
-		s.state.Store(key, val)
+	for _, m := range ms {
+		for key, val := range m {
+			s.state.Store(key, val)
+		}
 	}
 	return s
 }
 
 // todo: 这部分返回值还没想好怎么弄
-func (s *BaseSession) Send(zero *zero.Zero, message *message.IMessage) (*message.IMessage, error) {
+func (s *BaseSession) Send(zero *Zero, message *message.IMessage) (*message.IMessage, error) {
 	switch s.SubType() {
 	case Group:
 		zero.SendGroupMessage(s.From(), message)
@@ -139,7 +141,7 @@ func (s *BaseSession) Send(zero *zero.Zero, message *message.IMessage) (*message
 func (s *BaseSession) From() int64 {
 	var user interface{}
 	if s.SubType() == Group {
-		user, _ = s.state.Load("group_id")
+		user, _ = s.state.Load("group_code")
 	} else {
 		user, _ = s.state.Load("user_id")
 	}
@@ -149,14 +151,14 @@ func (s *BaseSession) From() int64 {
 	return 0
 }
 
-func (s *BaseSession) Sender() types.IUser {
+func (s *BaseSession) Sender() MSG {
 	user, _ := s.state.Load("sender")
-	if sender, ok := user.(types.IUser); ok {
+	if sender, ok := user.(MSG); ok {
 		return sender
 	}
 	return nil
 }
 
-func (s *BaseSession) SubType() Type {
+func (s *BaseSession) SubType() SessionType {
 	return s.sessionType&Group + s.sessionType&Private
 }

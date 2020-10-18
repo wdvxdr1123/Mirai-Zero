@@ -38,7 +38,7 @@ func LoadConfig() *Config {
 	return nil
 }
 
-// 生成随机设备信息
+// 加载随机设备信息
 func LoadRandomDevice() ([]byte, error) {
 	if !utils.FileExist("device.json") {
 		log.Warn("device.json 不存在, 将随机生成设备信息...")
