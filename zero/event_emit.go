@@ -12,7 +12,7 @@ func initZeroEvents() {
 
 func zeroOnGroupMessage(_ *client.QQClient,m *message.GroupMessage)  {
 	zero.Events.Emit(GroupMessageEvent, zero, NewBaseSession(
-		Group&Message&Base,
+		Group|Message|Base,
 		m.Time,
 		convertStructRaw(m),
 		))

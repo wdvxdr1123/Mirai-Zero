@@ -126,7 +126,7 @@ func NewBaseSession(tp SessionType, t int32,  ms ...MSG) *BaseSession {
 }
 
 // todo: 这部分返回值还没想好怎么弄
-func (s *BaseSession) Send(zero *Zero, message *message.IMessage) (*message.IMessage, error) {
+func (s *BaseSession) Send(zero *Zero, message message.IMessage) (message.IMessage, error) {
 	switch s.SubType() {
 	case Group:
 		zero.SendGroupMessage(s.From(), message)

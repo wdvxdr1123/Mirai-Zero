@@ -1,6 +1,8 @@
 // Author: https://github.com/wechaty/go-wechaty
 // Modified : https://github.com/wdvxdr1123
 // Package events provides simple EventEmitter support for Go Programming Language
+
+// 这个好像有点太慢了.重新写一个吧。。
 package zero
 
 import (

@@ -32,7 +32,7 @@ func init() {
 		TimestampFormat: "2006-01-02 15:04:05",
 		LogFormat:       "[Zero][%time%] [%lvl%]: %msg% \n",
 	})
-	zero = &Zero{}
+	zero = &Zero{Events: New()}
 }
 
 func Init() {
@@ -108,6 +108,15 @@ func Start() {
 	}
 	log.Info("登录成功！")
 	initZeroEvents()
+	/*  测试
+	zero.registerEvent(GroupMessageEvent, func(z *Zero, session *BaseSession) {
+		_, _ = session.Send(z, message.NewRichMessage(
+			message.Text("收到！"),
+			message.Face(100),
+			message.Image(utils.Url("https://cn.bing.com/images/search?view=detailV2&ccid=6IcNoQMj&id=8E0117CDC57920BFF196725E9CC32A32C6EECC3C&thid=OIP.6IcNoQMjH-SGD1XryX6C2gHaLH&mediaurl=https%3a%2f%2fgss0.baidu.com%2f-Po3dSag_xI4khGko9WTAnF6hhy%2fzhidao%2fwh%253D600%252C800%2fsign%3d5f8cf353fbedab64742745c6c70683fb%2f838ba61ea8d3fd1fbab72fa2304e251f94ca5fe8.jpg&exph=750&expw=500&q=%e7%99%be%e5%ba%a6%e5%9b%be%e7%89%87&simid=608028122264764812&ck=B465EE62E4D6C248CFF27AACF5E2598F&selectedIndex=0&FORM=IRPRST")),
+		))
+	})
+	 */
 }
 
 // 将插件注册到主服务
@@ -118,10 +127,12 @@ func RegisterPlugin(plugin IPlugin) {
 }
 
 // register event
-func (z *Zero) registerEvent(name uint8, f interface{}) {
-	z.Events.On(EventName(name), func(data ...interface{}) {
+func (z *Zero) registerEvent(name EventName, f interface{}) {
+	z.Events.On(name, func(data ...interface{}) {
 		defer func() {
-
+			if err := recover(); err != nil {
+				log.Error("(event error) ", err)
+			}
 		}()
 		values := make([]reflect.Value, 0, len(data))
 		for _, v := range data {
