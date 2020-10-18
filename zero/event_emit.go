@@ -1,7 +1,6 @@
 package zero
 
 import (
-	"fmt"
 	"github.com/Mrs4s/MiraiGo/client"
 	"github.com/Mrs4s/MiraiGo/message"
 	"reflect"
@@ -17,7 +16,6 @@ func zeroOnGroupMessage(_ *client.QQClient,m *message.GroupMessage)  {
 		m.Time,
 		convertStructRaw(m),
 		))
-	fmt.Println(convertStructRaw(m))
 }
 
 func convertStructRaw(s interface{}) MSG {
@@ -31,8 +29,8 @@ func convertStructRaw(s interface{}) MSG {
 		if jsonStr == "" {
 			continue
 		}
-		var val = v.Interface()
-		if reflect.TypeOf(val).Kind() == reflect.Struct {
+		var val = v.Field(i).Interface()
+		if reflect.TypeOf(val).Kind() == reflect.Struct || reflect.TypeOf(val).Kind() == reflect.Ptr {
 			msg[jsonStr] = convertStructRaw(val)
 		} else {
 			msg[jsonStr] = val
