@@ -7,7 +7,6 @@ type Rule func(event types.IEvent) bool
 type Matcher struct {
 	Priority int64
 	Block    bool
-	Sessions []Session
 	Rules    []Rule
 }
 
@@ -28,6 +27,12 @@ func On(priority int64, block bool, rules ...Rule) *Matcher {
 }
 
 func (m *Matcher)Run(event types.IEvent)  {
+	for _, rule := range m.Rules {
+		if rule(event) == false {
+			return
+		}
+	}
+	// 满足所有条件，创建一个新会话
 	panic("impl me")
 }
 
