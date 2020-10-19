@@ -3,6 +3,7 @@ package zero
 //go:generate stringer -type=EventName
 type EventName uint8
 
+/*
 const (
 	GroupMessageEvent EventName = iota
 	PrivateMessageEvent
@@ -48,3 +49,4 @@ type (
 	DisconnectEventListener    func(zero *Zero, session ISession)
 	ServerUpdatedEventListener func(zero *Zero, session ISession)
 )
+ */

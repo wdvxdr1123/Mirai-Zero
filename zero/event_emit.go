@@ -1,15 +1,9 @@
 package zero
 
-import (
-	"github.com/Mrs4s/MiraiGo/client"
-	"github.com/Mrs4s/MiraiGo/message"
-	"reflect"
-)
-
 func initZeroEvents() {
-	zero.Client.OnGroupMessage(zeroOnGroupMessage)
+	//zero.Client.OnGroupMessage(zeroOnGroupMessage)
 }
-
+/*
 func zeroOnGroupMessage(_ *client.QQClient,m *message.GroupMessage)  {
 	zero.Events.Emit(GroupMessageEvent, zero, NewBaseSession(
 		Group|Message|Base,
@@ -30,12 +24,8 @@ func convertStructRaw(s interface{}) MSG {
 			continue
 		}
 		var val = v.Field(i).Interface()
-		if reflect.TypeOf(val).Kind() == reflect.Struct || reflect.TypeOf(val).Kind() == reflect.Ptr {
-			msg[jsonStr] = convertStructRaw(val)
-		} else {
-			msg[jsonStr] = val
-		}
+		msg[jsonStr] = val
 	}
 	return msg
 }
-
+ */
