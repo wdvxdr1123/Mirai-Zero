@@ -135,7 +135,7 @@ func (z *Zero) registerEvent(name EventName, f interface{}) {
 
 func (z *Zero) SendGroupMessage(groupId int64, m message.IMessage) int32 {
 	switch e := m.(type) {
-	case *message.RichMessage:
+	case *message.MessageBuilder:
 		_ = z.Client.SendGroupMessage(groupId, &message2.SendingMessage{
 			Elements: z.GroupUpload(e, groupId).Elems,
 		},
@@ -144,7 +144,7 @@ func (z *Zero) SendGroupMessage(groupId int64, m message.IMessage) int32 {
 	return 0
 }
 
-func (z *Zero) GroupUpload(m *message.RichMessage, groupId int64) *message.RichMessage {
+func (z *Zero) GroupUpload(m *message.MessageBuilder, groupId int64) *message.MessageBuilder {
 	for index, elem := range m.Elems {
 		if i, ok := elem.(*message2.ImageElement); ok {
 			gm, err := z.Client.UploadGroupImage(groupId, i.Data)

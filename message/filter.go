@@ -3,8 +3,8 @@ package message
 import "github.com/Mrs4s/MiraiGo/message"
 
 // 筛选指定的消息
-func Filter(r *RichMessage, fn ...func(*message.IMessageElement) bool) *RichMessage { // todo:用pipeline改写
-	var m = &RichMessage{}
+func Filter(r *MessageBuilder, fn ...func(*message.IMessageElement) bool) *MessageBuilder { // todo:用pipeline改写
+	var m = &MessageBuilder{}
 	for _, elem := range r.Elems {
 		var st = true
 		for _, f := range fn {
@@ -20,7 +20,7 @@ func Filter(r *RichMessage, fn ...func(*message.IMessageElement) bool) *RichMess
 	return m
 }
 
-func FirstMatched(r *RichMessage, fn ...func(element *message.IMessageElement) bool) *message.IMessageElement {
+func FirstMatched(r *MessageBuilder, fn ...func(element *message.IMessageElement) bool) *message.IMessageElement {
 	for _, elem := range r.Elems {
 		var st = true
 		for _, f := range fn {
@@ -36,8 +36,8 @@ func FirstMatched(r *RichMessage, fn ...func(element *message.IMessageElement) b
 	return nil
 }
 
-func Foreach(r *RichMessage, fn ...func(element message.IMessageElement) message.IMessageElement) *RichMessage {
-	var m = &RichMessage{}
+func Foreach(r *MessageBuilder, fn ...func(element message.IMessageElement) message.IMessageElement) *MessageBuilder {
+	var m = &MessageBuilder{}
 	for _, elem := range r.Elems {
 		for _, f := range fn {
 			m.Elems = append(m.Elems, f(elem))

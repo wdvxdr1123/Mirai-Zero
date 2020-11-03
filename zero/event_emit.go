@@ -3,6 +3,7 @@ package zero
 func initZeroEvents() {
 	//zero.Client.OnGroupMessage(zeroOnGroupMessage)
 }
+
 /*
 func zeroOnGroupMessage(_ *client.QQClient,m *message.GroupMessage)  {
 	zero.Events.Emit(GroupMessageEvent, zero, NewBaseSession(
@@ -28,4 +29,4 @@ func convertStructRaw(s interface{}) MSG {
 	}
 	return msg
 }
- */
+*/

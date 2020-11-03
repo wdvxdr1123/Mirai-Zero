@@ -5,65 +5,59 @@ import (
 	"github.com/Mrs4s/MiraiGo/message"
 )
 
-func NewRichMessage(r ...func(*RichMessage)) *RichMessage {
-	m := &RichMessage{Elems: []message.IMessageElement{}}
-	return m.Append(r...)
+func NewMessageBuilder() *MessageBuilder {
+	builder := &MessageBuilder{Elems: []message.IMessageElement{}}
+	return builder
 }
 
-func (m *RichMessage) Append(r ...func(*RichMessage)) *RichMessage {
-	for _, f := range r {
-		f(m)
-	}
-	return m
+func NewMessageBuilderF(f func(builder *MessageBuilder)) *MessageBuilder {
+	builder := &MessageBuilder{Elems: []message.IMessageElement{}}
+	f(builder)
+	return builder
 }
 
-func Text(str ...interface{}) func(*RichMessage) {
-	return func(richMessage *RichMessage) {
-		richMessage.Elems = append(richMessage.Elems, message.NewText(fmt.Sprint(str...)))
-	}
+func (builder *MessageBuilder) Text(str ...interface{}) *MessageBuilder {
+	builder.Elems = append(builder.Elems, message.NewText(fmt.Sprint(str...)))
+	return builder
 }
 
 // 图片
-func Image(fn ...func() ([]byte, error)) func(*RichMessage) {
-	return func(richMessage *RichMessage) {
-		for _, f := range fn {
-			if v, err := f(); err == nil {
-				richMessage.Elems = append(richMessage.Elems, message.NewImage(v))
-			}
+func (builder *MessageBuilder) Image(fn ...func() ([]byte, error)) *MessageBuilder {
+	for _, f := range fn {
+		if v, err := f(); err == nil {
+			builder.Elems = append(builder.Elems, message.NewImage(v))
 		}
 	}
+	return builder
 }
 
 // QQ表情
-func Face(faces ...int32) func(*RichMessage) {
-	return func(richMessage *RichMessage) {
-		for _, index := range faces {
-			richMessage.Elems = append(richMessage.Elems, message.NewFace(index))
-		}
+func (builder *MessageBuilder) Face(faces ...int32) *MessageBuilder {
+	for _, index := range faces {
+		builder.Elems = append(builder.Elems, message.NewFace(index))
 	}
+	return builder
 }
 
 // At 消息
-func At(uins ...int64) func(*RichMessage) {
-	return func(richMessage *RichMessage) {
-		for _, uin := range uins {
-			richMessage.Elems = append(richMessage.Elems, message.NewAt(uin))
-		}
+func (builder *MessageBuilder) At(uins ...int64) *MessageBuilder {
+	for _, uin := range uins {
+		builder.Elems = append(builder.Elems, message.NewAt(uin))
 	}
+	return builder
 }
 
-func AtAll() func(*RichMessage) {
-	return func(richMessage *RichMessage) {
-		richMessage.Elems = append(richMessage.Elems, message.AtAll())
-	}
+func (builder *MessageBuilder) AtAll() *MessageBuilder {
+	builder.Elems = append(builder.Elems, message.AtAll())
+	return builder
 }
 
 // todo
-func Reply(file string) func(*RichMessage) {
+func (builder *MessageBuilder) Reply(file string) *MessageBuilder {
 	panic("impl me")
 }
 
 // todo
-func LightApp(file string) func(*RichMessage) {
+func (builder *MessageBuilder) LightApp(file string) *MessageBuilder {
 	panic("impl me")
 }

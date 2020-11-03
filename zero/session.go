@@ -7,7 +7,7 @@ import (
 
 type MSG map[string]interface{}
 
-type Handler func(z *Zero,event types.IEvent, session *Session)
+type Handler func(z *Zero, event types.IEvent, session *Session)
 
 type (
 	ISession interface {
@@ -35,25 +35,25 @@ type Session struct {
 func NewSession(ms ...MSG) *Session {
 	var s = &Session{}
 	/*
-	for _, m := range ms {
-		for key, val := range m {
+		for _, m := range ms {
+			for key, val := range m {
+			}
 		}
-	}
-	 */
+	*/
 	return s
 }
 
 // 设置会话的属性
 func (s *Session) Set(key string, val interface{}) {
 	/*
-	s.state.Store(key, val)
-	// todo: 怎么把事件传过来 ？？？
-	if handle, ok := s.handler.Load(key); ok {
-		if f, ok := handle.(func(*Zero, *Session)); ok {
-			go f(zero, s)
+		s.state.Store(key, val)
+		// todo: 怎么把事件传过来 ？？？
+		if handle, ok := s.handler.Load(key); ok {
+			if f, ok := handle.(func(*Zero, *Session)); ok {
+				go f(zero, s)
+			}
 		}
-	}
-	 */
+	*/
 }
 
 // 读取会话的属性

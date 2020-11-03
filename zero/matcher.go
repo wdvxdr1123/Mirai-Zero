@@ -26,7 +26,7 @@ func On(priority int64, block bool, rules ...Rule) *Matcher {
 	return matcher
 }
 
-func (m *Matcher)Run(event types.IEvent)  {
+func (m *Matcher) run(event types.IEvent) {
 	for _, rule := range m.Rules {
 		if rule(event) == false {
 			return
@@ -34,10 +34,4 @@ func (m *Matcher)Run(event types.IEvent)  {
 	}
 	// 满足所有条件，创建一个新会话
 	panic("impl me")
-}
-
-func Emit(event types.IEvent)  {
-	for _, matcher := range MatcherList {
-		matcher.Run(event)
-	}
 }

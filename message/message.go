@@ -17,7 +17,7 @@ type (
 	}
 
 	// 富文本消息，一般消息
-	RichMessage struct {
+	MessageBuilder struct {
 		Elems []message.IMessageElement
 	}
 
